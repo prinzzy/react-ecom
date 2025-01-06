@@ -1,0 +1,25 @@
+# Node.js dependencies
+node_modules/
+
+# Log files
+*.log
+logs/
+
+# Environment files
+.env
+
+# IDE and OS specific files
+.DS_Store
+Thumbs.db
+
+# npm package-lock file
+package-lock.json
+
+# VSCode settings folder
+.vscode/
+
+# Coverage folder (if using testing tools)
+coverage/
+
+# Build folder (for transpiled code)
+dist/
