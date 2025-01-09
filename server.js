@@ -8,9 +8,24 @@ dotenv.config();
 
 const app = express();
 
+// Konfigurasi CORS
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL || "http://localhost:3000", // Sesuaikan dengan URL frontend Anda
+    credentials: true, // Penting untuk mengizinkan cookies
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: [
+      "Origin",
+      "X-Requested-With",
+      "Content-Type",
+      "Accept",
+      "Authorization",
+    ],
+  })
+);
+
 // Middleware to parse JSON bodies
 app.use(express.json());
-app.use(cors()); // Enable CORS
 
 // Routes
 app.use("/api/auth", userRoutes); // Add the route for user authentication
