@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { useAuth } from "../context/authContext"; // Import the useAuth context
-import "./register.css"; // Ensure your styles are defined
+import { useAuth } from "../context/authContext";
+import "./register.css";
 import "./notification.css";
 
 function Register({ closeModal, openLogin }) {
-  const { register } = useAuth(); // Get the register function from context
+  const { register } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -15,23 +15,28 @@ function Register({ closeModal, openLogin }) {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      setErrorMessage("Passwords do not match.");
+      setErrorMessage("Password tidak cocok");
       setSuccessMessage("");
       return;
     }
 
     try {
-      await register(email, password); // Call the register function from context
-      setSuccessMessage("Registration successful!");
+      const response = await register(email, password);
+      console.log("Register response:", response); // untuk debugging
+
+      setSuccessMessage("Registrasi berhasil! Silakan login.");
       setErrorMessage("");
       setEmail("");
       setPassword("");
       setConfirmPassword("");
+
+      // Redirect ke login setelah 2 detik
       setTimeout(() => {
-        closeModal(); // Close the modal after 2 seconds
+        openLogin();
       }, 2000);
     } catch (error) {
-      setErrorMessage("Registration failed, please try again.");
+      console.error("Register error in component:", error);
+      setErrorMessage(error.message || "Registrasi gagal, silakan coba lagi.");
       setSuccessMessage("");
     }
   };
@@ -61,7 +66,7 @@ function Register({ closeModal, openLogin }) {
           />
         </div>
         <div className="input-group">
-          <label htmlFor="confirmPassword">Confirm Password</label>
+          <label htmlFor="confirmPassword">Konfirmasi Password</label>
           <input
             type="password"
             id="confirmPassword"
@@ -73,7 +78,6 @@ function Register({ closeModal, openLogin }) {
         <button type="submit">Register</button>
       </form>
 
-      {/* Show success or error message */}
       {successMessage && (
         <div className="notification success">{successMessage}</div>
       )}
@@ -81,7 +85,7 @@ function Register({ closeModal, openLogin }) {
 
       <div className="back-link">
         <button onClick={openLogin} className="back-button">
-          Back to Login
+          Kembali ke Login
         </button>
       </div>
     </div>

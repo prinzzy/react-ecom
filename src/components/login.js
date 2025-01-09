@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useAuth } from "../context/authContext"; // Import useAuth from the correct file
 import "./login.css"; // Make sure to have styles here
 import "./notification.css";
+import { useNavigate } from "react-router-dom";
 
 function Login({ openRegister, closeModal }) {
   const { login } = useAuth(); // Get the login function from context
@@ -9,23 +10,34 @@ function Login({ openRegister, closeModal }) {
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState(""); // State for error
   const [successMessage, setSuccessMessage] = useState(""); // State for success
+  const navigate = useNavigate(); // Tambahkan ini
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await login(email, password); // Call the login function from context
-      setSuccessMessage("Login successful!"); // Set success message
-      setErrorMessage(""); // Clear error message
-      setEmail(""); // Clear form fields
-      setPassword(""); // Clear form fields
+      const response = await login(email, password);
+      console.log("Login response in component:", response); // untuk debugging
 
-      // Close the modal after success
-      setTimeout(() => {
-        closeModal(); // Close modal after success
-      }, 2000); // Close modal after 2 seconds to show success message
+      if (response?.user?.role === "admin") {
+        setSuccessMessage("Login berhasil! Mengalihkan ke dashboard admin...");
+        setTimeout(() => {
+          navigate("/admin");
+          closeModal();
+        }, 1000);
+      } else {
+        setSuccessMessage("Login berhasil!");
+        setTimeout(() => {
+          closeModal();
+        }, 2000);
+      }
+
+      setErrorMessage("");
+      setEmail("");
+      setPassword("");
     } catch (error) {
-      setErrorMessage("Login failed, please try again."); // Set error message
-      setSuccessMessage(""); // Clear success message
+      console.error("Login error in component:", error);
+      setErrorMessage(error.message || "Login gagal, silakan coba lagi.");
+      setSuccessMessage("");
     }
   };
 
